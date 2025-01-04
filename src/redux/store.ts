@@ -1,9 +1,9 @@
 import {configureStore} from '@reduxjs/toolkit';
-import genderSlice from './genderSlice';
+import bmiSlice from './bmiSlice';
 
 const store = configureStore({
   reducer: {
-    gender: genderSlice,
+    root: bmiSlice,
   },
 });
 
