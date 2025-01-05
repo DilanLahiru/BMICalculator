@@ -70,83 +70,133 @@ const HomeScreen: React.FC = () => {
   //   }
   // };
 
-  const storeData = async () => {
-    dispatch(
-      setGenderType({
-        genderType: gender,
-      }),
-    );
-    dispatch(
-      setUserAge({
-        age: age,
-      }),
-    );
-    dispatch(
-      setUserHeigts({
-        userheight: userheight,
-      }),
-    );
-    dispatch(
-      setUserWeight({
-        weight: weight,
-      }),
-    );
-    dispatch(
-      setUserBmiValue({
-        bmiValue: bmi,
-      }),
-    );
-    dispatch(
-      setBmiFeedback({
-        feedback: feedback
-      })
-    )
-    dispatch(
-      setBmiHealthTips({
-        healthTips: healthTips
-      })
-    )
-  };
+  // const storeData = async () => {
+  //   dispatch(
+  //     setGenderType({
+  //       genderType: gender,
+  //     }),
+  //   );
+  //   dispatch(
+  //     setUserAge({
+  //       age: age,
+  //     }),
+  //   );
+  //   dispatch(
+  //     setUserHeigts({
+  //       userheight: userheight,
+  //     }),
+  //   );
+  //   dispatch(
+  //     setUserWeight({
+  //       weight: weight,
+  //     }),
+  //   );
+  //   dispatch(
+  //     setUserBmiValue({
+  //       bmiValue: bmi,
+  //     }),
+  //   );
+  //   dispatch(
+  //     setBmiFeedback({
+  //       feedback: feedback
+  //     })
+  //   )
+  //   dispatch(
+  //     setBmiHealthTips({
+  //       healthTips: healthTips
+  //     })
+  //   )
+  // };
+
+  // const calculateBMI = async () => {
+  //   const heightInMeters = userheight / 100;
+  //   const weightInKg = weight;
+
+  //   if (!heightInMeters || !weightInKg || !age) {
+  //     Alert.alert('Invalid Input', 'Please enter valid values for all fields.');
+  //     return;
+  //   }
+
+  //   const calculatedBmi = weightInKg / (heightInMeters * heightInMeters);
+  //   setBmi(calculatedBmi);
+  //   //saveData();
+
+  //   if (calculatedBmi < 18.5) {
+  //     setFeedback('Underweight');
+  //     setHealthTips(healthTipsConfig.underweight);
+  //   } else if (calculatedBmi >= 18.5 && calculatedBmi < 24.9) {
+  //     setFeedback('Normal weight');
+  //     setHealthTips(healthTipsConfig.normal);
+  //   } else if (calculatedBmi >= 25 && calculatedBmi < 29.9) {
+  //     setFeedback('Overweight');
+  //     setHealthTips(healthTipsConfig.overweight);
+  //   } else {
+  //     setFeedback('Obesity');
+  //     setHealthTips(healthTipsConfig.obesity);
+  //   }
+
+  //   await storeData();
+
+  //   console.log(calculatedBmi);
+  //   console.log('====================================');
+  //   console.log(feedback);
+  //   console.log(healthTips);
+  //   console.log('====================================');
+  //   setTimeout(() => {
+  //     navigation.navigate('result');
+  //     resetFields();
+  //   }, 2000);
+  // };
 
   const calculateBMI = async () => {
     const heightInMeters = userheight / 100;
     const weightInKg = weight;
-
+  
     if (!heightInMeters || !weightInKg || !age) {
       Alert.alert('Invalid Input', 'Please enter valid values for all fields.');
       return;
     }
-
+  
+    // Calculate BMI and determine feedback and health tips
     const calculatedBmi = weightInKg / (heightInMeters * heightInMeters);
-    setBmi(calculatedBmi);
-    //saveData();
-
+    let calculatedFeedback = '';
+    let calculatedHealthTips = '';
+  
     if (calculatedBmi < 18.5) {
-      setFeedback('Underweight');
-      setHealthTips(healthTipsConfig.underweight);
+      calculatedFeedback = 'Underweight';
+      calculatedHealthTips = healthTipsConfig.underweight;
     } else if (calculatedBmi >= 18.5 && calculatedBmi < 24.9) {
-      setFeedback('Normal weight');
-      setHealthTips(healthTipsConfig.normal);
+      calculatedFeedback = 'Normal weight';
+      calculatedHealthTips = healthTipsConfig.normal;
     } else if (calculatedBmi >= 25 && calculatedBmi < 29.9) {
-      setFeedback('Overweight');
-      setHealthTips(healthTipsConfig.overweight);
+      calculatedFeedback = 'Overweight';
+      calculatedHealthTips = healthTipsConfig.overweight;
     } else {
-      setFeedback('Obesity');
-      setHealthTips(healthTipsConfig.obesity);
+      calculatedFeedback = 'Obesity';
+      calculatedHealthTips = healthTipsConfig.obesity;
     }
-
-    await storeData();
-
-    console.log(calculatedBmi);
-    console.log('====================================');
-    console.log(feedback);
-    console.log(healthTips);
-    console.log('====================================');
+  
+    // Update local state for UI
+    setBmi(calculatedBmi);
+    setFeedback(calculatedFeedback);
+    setHealthTips(calculatedHealthTips);
+  
+    // Dispatch values to Redux
+    dispatch(setGenderType({ genderType: gender }));
+    dispatch(setUserAge({ age }));
+    dispatch(setUserHeigts({ userheight }));
+    dispatch(setUserWeight({ weight }));
+    dispatch(setUserBmiValue({ bmiValue: calculatedBmi }));
+    dispatch(setBmiFeedback({ feedback: calculatedFeedback }));
+    dispatch(setBmiHealthTips({ healthTips: calculatedHealthTips }));
+  
+    // Navigate to the result screen after a delay
     setTimeout(() => {
       navigation.navigate('result');
       resetFields();
     }, 2000);
   };
+  
 
   const resetFields = async () => {
     setAge(0);
